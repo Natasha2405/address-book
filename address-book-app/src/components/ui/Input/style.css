@@ -1,0 +1,24 @@
+.input-field__label {
+    width: 44px;
+    height: 21px;
+    text-align: left;
+    color: var(--color-secondary);
+}
+
+.input-field {
+    width: 350px;
+    height: 40px;
+    background: #f2e6ff;
+    border: var(--border-input-normal);
+    border-radius: 5px;
+    text-align: left;
+    color: var(--font-color-input);
+    margin-top: 5px;
+    padding: 10px;
+    box-shadow: var(--shadow-input);
+}
+
+.input-field:focus {
+    border: var(--border-input-focused);
+    outline: transparent;
+}

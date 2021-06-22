@@ -1,0 +1,12 @@
+.active-button {
+    width: 120px;
+    height: 30px;
+    background: var(--color-secondary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-input);
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-transform: uppercase;
+}
