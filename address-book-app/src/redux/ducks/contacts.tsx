@@ -3,22 +3,14 @@ import { Contact, ContactsState, ContactsListActions } from "../../types";
 
 // initial state
 const initialState: ContactsState = {
-	contacts: [
-		{
-			id: 'qjbliy4z7',
-			first_name: 'Samantha',
-			last_name: 'Pitterson',
-			email: 'sampitt@gmail.com',
-			country: 'Germany'
-		}
-	]
+	contacts: []
 };
 
 // constants
-const ADD_CONTACT = 'ADD_CONTACT';
-// const EDIT_CONTACT = 'EDIT_CONTACT';
-// const DELETE_CONTACT = 'DELETE_CONTACT';
 const SET_CONTACTS = 'SET_CONTACTS';
+const ADD_CONTACT = 'ADD_CONTACT';
+const EDIT_CONTACT = 'EDIT_CONTACT';
+const DELETE_CONTACT = 'DELETE_CONTACT';
 
 // actions
 export const setContacts = (contacts: Contact[]) => {
@@ -35,8 +27,21 @@ export const addContact = (contact: Contact) => {
 	};
 };
 
-// reducer
+export const editContact = (updatedContact: Contact) => {
+	return {
+		type: EDIT_CONTACT,
+		payload: updatedContact
+	}
+};
 
+export const deleteContact = (contact: Contact) => {
+	return {
+		type: DELETE_CONTACT,
+		payload: contact
+	}
+};
+
+// reducer
 const ContactsReducer = (state = initialState, action: ContactsListActions): ContactsState => {
 	switch (action.type) {
 		case SET_CONTACTS:
@@ -52,9 +57,18 @@ const ContactsReducer = (state = initialState, action: ContactsListActions): Con
 					action.payload
 				]
 			}
+		case EDIT_CONTACT:
+			return {
+				...state,
+				contacts: state.contacts.map((contact) => (contact.id === action.payload.id) ?
+				action.payload : contact)
+			}
+		case DELETE_CONTACT:
+			return {
+				contacts: state.contacts.filter((contact) => (contact.id !== action.payload.id))
+			}
 		default: return state;
 	}
-
 };
 
 export default ContactsReducer;
