@@ -2,8 +2,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-// components
-// import { NewContactForm } from '../widgets/NewContactForm/NewContactForm';
 // types
 import { Contact, AplicationState } from '../../types';
 // actions
@@ -32,7 +30,7 @@ export const HomePage: React.FC<StateProps> = () => {
 	const getContacts = () => {
 		let contacts: Contact[] = getLocalStorageContacts();
 		dispatch(setContacts(contacts));
-		// console.log(contacts);
+		console.log(contacts);
 	};
 
 	let data = useSelector((state: AplicationState) => state.contacts);
@@ -48,6 +46,10 @@ export const HomePage: React.FC<StateProps> = () => {
 		let localStorageContacts: Contact[] = getLocalStorageContacts();
 		localStorageContacts.splice(index, 1);
 		setLocalStorageContacts(localStorageContacts);
+	};
+
+	const editContactRedirect = (id: string) => {
+		history.push(`/contacts/update-contact/${id}`);
 	};
 
 	return (
@@ -78,7 +80,7 @@ export const HomePage: React.FC<StateProps> = () => {
 										<td>{contact.last_name}</td>
 										<td>{contact.email}</td>
 										<td>{contact.country}</td>
-										<td className='icon-active'>
+										<td className='icon-active' onClick={() => editContactRedirect(contact.id)}>
 											<img className='icon-active' src={iconEdit} alt='' />
 										</td>
 										<td className='icon-active' onClick={() => removeContact(contact, index)}>

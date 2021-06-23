@@ -9,7 +9,7 @@ import './style.css';
 export const AddNewContact: React.FC = () => {
 
     return(
-        <div className='new-contcat-form-container'>
+        <div className='new-contact-form-container'>
             <NewContactForm />
         </div>
     );
