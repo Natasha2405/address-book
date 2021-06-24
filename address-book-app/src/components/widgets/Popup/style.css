@@ -1,0 +1,33 @@
+.popup-container {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	backdrop-filter: blur(24px);
+}
+
+	.popup__box {
+		position: relative;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 40%;
+		z-index: 101;
+		padding: 40px;
+		background: var(--color-white);
+		box-shadow: var(--shadow-input);
+		border: var(--border-input-normal);
+		border-radius: 5px;
+	}
+
+	.del-confirmation-text {
+		color: var(--color-secondary)
+	}
+
+	.buttons-box {
+		display: flex;
+		margin-top: 20px;
+		justify-content: space-between;
+	}

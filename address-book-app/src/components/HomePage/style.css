@@ -1,21 +1,11 @@
-.homepage-container {
+.button-add-new-contact {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
 	align-items: center;
-	background: var(--color-body);
-	width: 100%;
-	height: 100%;
+	background: var(--color-body);;
+	cursor: pointer;
+	color: #e68a00;
 }
-
-	.button-add-new-contact {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		background: var(--color-body);;
-		cursor: pointer;
-		color: #e68a00;
-	}
 		.icon-add-new-contact {
 			width: 55px;
 		}

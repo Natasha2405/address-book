@@ -1,7 +1,9 @@
 // vendor imports
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+// components
+import { Popup } from '../../components/widgets/Popup/Popup';
 // types
 import { Contact, AplicationState } from '../../types';
 // actions
@@ -20,18 +22,11 @@ interface StateProps {
 }
 
 export const HomePage: React.FC<StateProps> = () => {
+	const [isActive, setIsActive] = useState(false);
+	const [popUpContact, setPopUpContact] = useState<Contact | {}>({});
+	const [index, setIndex] = useState(0);
 	const dispatch = useDispatch();
 	const history = useHistory();
-
-	const ButtonAddNewContact = () => {
-		history.push('/contacts/new-contact');
-	};
-
-	const getContacts = () => {
-		let contacts: Contact[] = getLocalStorageContacts();
-		dispatch(setContacts(contacts));
-		console.log(contacts);
-	};
 
 	let data = useSelector((state: AplicationState) => state.contacts);
 	let contacts = data['contacts'];
@@ -41,19 +36,41 @@ export const HomePage: React.FC<StateProps> = () => {
 		//  eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const getContacts = () => {
+		let contacts: Contact[] = getLocalStorageContacts();
+		dispatch(setContacts(contacts));
+	};
+
+	const togglePopup = () => {
+		setIsActive(prevState => !prevState)
+	};
+
 	const removeContact = (contact: Contact, index: number) => {
 		dispatch(deleteContact(contact));
 		let localStorageContacts: Contact[] = getLocalStorageContacts();
 		localStorageContacts.splice(index, 1);
 		setLocalStorageContacts(localStorageContacts);
+		togglePopup();
+	};
+
+	const ButtonAddNewContact = () => {
+		history.push('/contacts/new-contact');
 	};
 
 	const editContactRedirect = (id: string) => {
 		history.push(`/contacts/update-contact/${id}`);
 	};
 
+	const modalPopUp = (id: string) => {
+		togglePopup();
+		const findContact = contacts.filter(contact => contact.id === id)[0];
+		const findIndex = contacts.indexOf(findContact);
+		setPopUpContact(findContact);
+		setIndex(findIndex);
+	};
+
 	return (
-		<div className='homepage-container'>
+		<div className='main-container-wrapper'>
 			<div className='button-add-new-contact' onClick={ButtonAddNewContact}>
 				<img className='icon-add-new-contact' src={iconAddNew} alt='' />
 				<span>Add new Contacts</span>
@@ -75,22 +92,33 @@ export const HomePage: React.FC<StateProps> = () => {
 						<tbody>
 							{contacts.map((contact, index) => {
 								return (
-									<tr key={contact.id}>
-										<td>{contact.first_name} </td>
-										<td>{contact.last_name}</td>
-										<td>{contact.email}</td>
-										<td>{contact.country}</td>
-										<td className='icon-active' onClick={() => editContactRedirect(contact.id)}>
-											<img className='icon-active' src={iconEdit} alt='' />
-										</td>
-										<td className='icon-active' onClick={() => removeContact(contact, index)}>
-											<img className='icon-active' src={iconDelete} alt='' />
-										</td>
-									</tr>
+									<>
+										<tr key={contact.id}>
+											<td>{contact.first_name} </td>
+											<td>{contact.last_name}</td>
+											<td>{contact.email}</td>
+											<td>{contact.country}</td>
+											<td className='icon-active' onClick={() => editContactRedirect(contact.id)}>
+												<img className='icon-active' src={iconEdit} alt='' />
+											</td>
+											<td className='icon-active'>
+												<img className='icon-active' onClick={() => modalPopUp(contact.id)} src={iconDelete} alt='' />
+											</td>
+										</tr>
+									</>
 								);
 							})}
 						</tbody>
 					</table>
+					{isActive ?
+						<Popup
+							text={'Are you sure you want to delete this contact?'}
+							deleteContact={removeContact}
+							closePopup={togglePopup}
+							contact={popUpContact}
+							index={index}
+						/>
+						: null}
 				</div>
 				: <h3 className='table-state--title'> Your Address Book is empty.</h3>
 			}
