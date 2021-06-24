@@ -53,7 +53,7 @@ const ContactsReducer = (state = initialState, action: ContactsListActions): Con
 			return {
 				...state,
 				contacts: [
-					...state.contacts, 
+					...state.contacts,
 					action.payload
 				]
 			}
@@ -61,7 +61,7 @@ const ContactsReducer = (state = initialState, action: ContactsListActions): Con
 			return {
 				...state,
 				contacts: state.contacts.map((contact) => (contact.id === action.payload.id) ?
-				action.payload : contact)
+					action.payload : contact)
 			}
 		case DELETE_CONTACT:
 			return {

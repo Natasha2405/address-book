@@ -1,9 +1,0 @@
-.edit-contact-form-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	background: var(--color-body);
-	width: 100%;
-	height: 100%;
-}
