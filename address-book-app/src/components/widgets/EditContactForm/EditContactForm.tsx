@@ -1,7 +1,7 @@
 // vendor imports
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 // components
 import { Input } from '../../ui/Input/Input';
 import { Button } from '../../ui/Button/Button';
@@ -10,7 +10,7 @@ import { setContacts, editContact } from '../../../redux/ducks/contacts';
 import { getLocalStorageContacts, setLocalStorageContacts } from '../../../services/localStorage';
 // validation
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { validationSchema } from '../../../services/validationSchema';
 // types
 import { Contact, AplicationState } from '../../../types';
 // country-list
@@ -21,17 +21,11 @@ interface ParamTypes {
 };
 
 export const EditContactForm: React.FC = () => {
-	const dispatch = useDispatch();
-	const history = useHistory();
-	const [infoMessage, setInfoMessage] = useState('');
-	const { id } = useParams<ParamTypes>();
 	let countries = getNames();
-
-	const getContacts = () => {
-		let contacts: Contact[] = getLocalStorageContacts();
-		dispatch(setContacts(contacts));
-	};
-
+	const [infoMessage, setInfoMessage] = useState('');
+	const dispatch = useDispatch();
+	const { id } = useParams<ParamTypes>();
+	
 	let data = useSelector((state: AplicationState) => state.contacts);
 	let contacts = data['contacts'];
 
@@ -39,6 +33,11 @@ export const EditContactForm: React.FC = () => {
 		getContacts();
 		//  eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	const getContacts = () => {
+		let contacts: Contact[] = getLocalStorageContacts();
+		dispatch(setContacts(contacts));
+	};
 
 	let contact = contacts.find(obj => obj.id === id);
 
@@ -53,7 +52,6 @@ export const EditContactForm: React.FC = () => {
 		dispatch(editContact(contact));
 		setInfoMessage('Contact successfully saved!');
 		resetInfoMessage();
-		BackToHomePage();
 	};
 
 	if (contacts.length > 0) {
@@ -63,13 +61,7 @@ export const EditContactForm: React.FC = () => {
 	const resetInfoMessage = () => {
 		setTimeout(() => {
 			setInfoMessage('');
-		}, 1000);
-	};
-
-	const BackToHomePage = () => {
-		setTimeout(() => {
-			history.push('/');
-		}, 1000);
+		}, 2000);
 	};
 
 	const formik = useFormik({
@@ -80,16 +72,7 @@ export const EditContactForm: React.FC = () => {
 			country: contact ? contact.country : ''
 		},
 		enableReinitialize: true,
-		validationSchema: Yup.object({
-			firstName: Yup.string()
-				.required('This is a required field.'),
-			lastName: Yup.string()
-				.required('This is a required field.'),
-			email: Yup.string().email('Invalid email address.')
-				.required('This is a required field.'),
-			country: Yup.string()
-				.required('This is a required field.')
-		}),
+		validationSchema: validationSchema,
 		onSubmit: handleEditContact
 	});
 
@@ -148,6 +131,7 @@ export const EditContactForm: React.FC = () => {
 						<div className='error-message'>{formik.errors.country}</div>
 					) : null}
 				</div>
+				<br />
 				<br />
 				<div className='btn-create-contact'>
 					<Button type="submit" disabled={formik.isSubmitting}

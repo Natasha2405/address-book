@@ -1,7 +1,6 @@
 // vendor imports
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 // components
 import { Input } from '../../ui/Input/Input';
 import { Button } from '../../ui/Button/Button';
@@ -10,7 +9,7 @@ import { addContact } from '../../../redux/ducks/contacts';
 import { addContactInLocalStorage } from '../../../services/localStorage';
 // validation
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { validationSchema } from '../../../services/validationSchema';
 // types
 import { Contact, AplicationState } from '../../../types';
 // country-list
@@ -19,11 +18,10 @@ import { getNames } from 'country-list';
 import './style.css';
 
 export const NewContactForm: React.FC = () => {
-    const dispatch = useDispatch();
-    const history = useHistory();
-    const [infoMessage, setInfoMessage] = useState('');
     let countries = getNames();
-
+    const [infoMessage, setInfoMessage] = useState('');
+    const dispatch = useDispatch();
+    
     let data = useSelector((state: AplicationState) => state.contacts);
     let contacts = data['contacts'];
 
@@ -45,7 +43,6 @@ export const NewContactForm: React.FC = () => {
             addContactInLocalStorage(contact, contacts);
             setInfoMessage('Contact successfully added!');
             formik.resetForm();
-            BackToHomePage();
         } else {
             setInfoMessage('Contact with that email address already exists!');
         }
@@ -55,13 +52,7 @@ export const NewContactForm: React.FC = () => {
     const resetInfoMessage = () => {
         setTimeout(() => {
             setInfoMessage('');
-        }, 1000);
-    };
-
-    const BackToHomePage = () => {
-        setTimeout(() => {
-            history.push('/');
-        }, 1000);
+        }, 2000);
     };
 
     const formik = useFormik({
@@ -72,16 +63,7 @@ export const NewContactForm: React.FC = () => {
             country: ''
         },
         enableReinitialize: true,
-        validationSchema: Yup.object({
-            firstName: Yup.string()
-                .required('This is a required field.'),
-            lastName: Yup.string()
-                .required('This is a required field.'),
-            email: Yup.string().email('Invalid email address.')
-                .required('This is a required field.'),
-            country: Yup.string()
-                .required('This is a required field.')
-        }),
+        validationSchema: validationSchema,
         onSubmit: addNewContact
     });
 
@@ -140,6 +122,7 @@ export const NewContactForm: React.FC = () => {
                         <div className='error-message'>{formik.errors.country}</div>
                     ) : null}
                 </div>
+                <br />
                 <br />
                 <div className='btn-create-contact'>
                     <Button type="submit" disabled={formik.isSubmitting}
