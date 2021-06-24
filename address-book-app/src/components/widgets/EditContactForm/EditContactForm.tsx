@@ -41,6 +41,13 @@ export const EditContactForm: React.FC = () => {
 
 	let contact = contacts.find(obj => obj.id === id);
 
+	const checkForDuplicateContacts = (email: string, contacts: Contact[]) => {
+        let duplicateContacts = contacts.filter(contact => contact.email === email);
+        return duplicateContacts.length > 0 ? true : false;
+    };
+
+	let filteredContacts = contacts.filter(item => item !== contact);
+
 	const handleEditContact = () => {
 		let contact: Contact = {
 			id: id,
@@ -49,9 +56,13 @@ export const EditContactForm: React.FC = () => {
 			email: formik.values.email,
 			country: formik.values.country
 		};
-		dispatch(editContact(contact));
-		setInfoMessage('Contact successfully saved!');
-		resetInfoMessage();
+		if (!checkForDuplicateContacts(contact.email, filteredContacts)) {
+			dispatch(editContact(contact));
+			setInfoMessage('Contact successfully saved!');
+        } else {
+            setInfoMessage('Contact with that email address already exists!');
+        }
+        resetInfoMessage();
 	};
 
 	if (contacts.length > 0) {
